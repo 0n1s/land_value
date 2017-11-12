@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">LandValuationApplication</string>
+    <string name="LandSize_prompt">Choose a country</string>
+    <string name="County_prompt">Choose a country</string>
+    <string name="Amenities_prompt">Choose a country</string>
+    <string-array name="LandSize_arrays">
+        <item>Size of Land</item>
+        <item>1/4 Acre</item>
+        <item>1/2 Acre</item>
+        <item>3/4 Acre</item>
+        <item>1 Acre</item>
+        <item>Plot</item>
+    </string-array>
+    <string-array name="County_arrays">
+        <item>Select your County</item>
+        <item>Nairobi</item>
+        <item>Nakuru</item>
+        <item>Nanyuki</item>
+        <item>Nyeri</item>
+        <item>Nyahururu</item>
+    </string-array>
+    <string-array name="Amenities_arrays">
+        <item>University</item>
+        <item>School</item>
+        <item>Town</item>
+        <item>Major Road</item>
+        <item>Park</item>
+    </string-array>
+</resources>
