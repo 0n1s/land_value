@@ -1,9 +1,11 @@
 package inc.appscode0.landvaluationapplication;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -15,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import inc.appscode0.landvaluationapplication.nearme.SearchLocbyType;
 
 
@@ -22,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner0,spinner1, spinner2, spinner3, spinner4, spinner5, spinner6, spinner7, spinner8,spinner9;
     private Button calculate,resetButton;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         addItemsOnSpinner2();
@@ -59,15 +65,18 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView locationLink = (TextView) findViewById(R.id.SearchLocation);
 
-        locationLink.setOnClickListener(new View.OnClickListener(){
-
+        locationLink.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 Intent registerIntent= new Intent(MainActivity.this,SearchLocbyType.class);
+                MainActivity.this.finish();
                 MainActivity.this.startActivity(registerIntent);
+
             }
         });
-        spinner0.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner0.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(MainActivity.this,spinner0.getSelectedItem().toString() , Toast.LENGTH_SHORT).show();
@@ -79,9 +88,227 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        try
+        {
+
+            Intent intent = getIntent();
+            String json_data = intent.getStringExtra("json_data");
+            Log.d("json_data", json_data);
+
+            JSONArray  jsonArray = new JSONArray(json_data);
+            Double[] data_school = new Double[jsonArray.length()];
+            Double[] data_hospital = new Double[jsonArray.length()];
+            Double[] data_university= new Double[jsonArray.length()];
+
+
+            for(int i=0; i<jsonArray.length(); i++)
+            {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String type= jsonObject.getString("type");
+                String dis = jsonObject.getString("distance");
+
+                if(type.equals("school"))
+                {
+                    data_school[i]=Double.parseDouble(dis);
+                    Double without_null []=removeNull(data_school);
+                    Arrays.sort(without_null);
+                    Double smallest=  without_null[0];
+                    set_data(type, String.valueOf(smallest));
+
+                }
+
+
+                if(type.equals("university"))
+                {
+                    data_university[i]=Double.parseDouble(dis);
+                    Double without_null []=removeNull(data_university);
+                    Arrays.sort(without_null);
+                    Double smallest=  without_null[0];
+                    set_data(type, String.valueOf(smallest));
+                }
+
+
+                if(type.equals("hospital"))
+                {
+                    data_hospital[i]=Double.parseDouble(dis);
+                    Double without_null []=removeNull(data_hospital);
+                    Arrays.sort(without_null);
+                    Double smallest=  without_null[0];
+                    set_data(type, String.valueOf(smallest));
+
+                }
+
+
+            }
+
+//            Toast.makeText(this, String.valueOf(data_school[0]), Toast.LENGTH_SHORT).show();
+//
+//
+//            if(data_school!=null)
+//            {
+//                Arrays.sort(data_school);
+//                Double smallest = data_school[0];
+//                Toast.makeText(this, String.valueOf(smallest), Toast.LENGTH_SHORT).show();
+//                for(int i=0; i<jsonArray.length(); i++)
+//                {
+//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                    String type= jsonObject.getString("type");
+//                    String dis = jsonObject.getString("distance");
+//
+//                    if(String.valueOf(smallest).equals(dis))
+//                    {
+//                        set_data(type, String.valueOf(smallest));
+//                    }
+//                }
+//            }
+//
+//
+//            if(data_university!=null)
+//            {
+//                Arrays.sort(data_university);
+//                Double smallest = data_university[0];
+//                for(int i=0; i<jsonArray.length(); i++)
+//                {
+//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                    String type= jsonObject.getString("type");
+//                    String dis = jsonObject.getString("distance");
+//
+//                    if(String.valueOf(smallest).equals(dis))
+//                    {
+//                        set_data(type, String.valueOf(smallest));
+//                    }
+//                }
+//            }
+//
+//
+//
+//
+//            if(data_hospital.length!=0)
+//            {
+//                Arrays.sort(data_hospital);
+//                Double smallest = data_hospital[0];
+//                for(int i=0; i<jsonArray.length(); i++)
+//                {
+//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                    String type= jsonObject.getString("type");
+//                    String dis = jsonObject.getString("distance");
+//
+//                    if(String.valueOf(smallest).equals(dis))
+//                    {
+//                        set_data(type, String.valueOf(smallest));
+//                    }
+//                }
+//            }
+
+
+
+
+
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(this, String.valueOf(ex), Toast.LENGTH_SHORT).show();
+            Log.d("ex", String.valueOf(ex));
+        }
 
 
         //  reset */
+    }
+
+    public Double[] removeNull(Double[] a)
+    {
+        ArrayList<Double> removedNull = new ArrayList<Double>();
+        for (Double str : a)
+            if (str != null)
+                removedNull.add(str);
+        return removedNull.toArray(new Double[0]);
+    }
+
+    public void set_data(final String placetype, final String distance)
+    {
+        final Double dis=  Double.parseDouble(distance);
+        switch (placetype){
+            case "school":
+                Log.d("data", "school distance ->" +distance);
+                spinner8.setSelection(2);
+                if(dis<100)
+                {
+                    spinner9.setSelection(1);
+                }
+                else if(dis<300)
+                {
+                    spinner9.setSelection(2);
+                }
+                else if(dis<1000)
+                {
+                    spinner9.setSelection(3);
+                }
+                else if(dis<2000)
+                {
+                    spinner9.setSelection(4);
+                }
+                else if(dis>2000)
+                {
+                    spinner9.setSelection(5);
+                }
+                break;
+            case "university":
+                Log.d("data", "university distance ->" +distance);
+                spinner8.setSelection(1);
+                if(dis<100)
+                {
+                    spinner9.setSelection(1);
+                }
+                else if(dis<300)
+                {
+                    spinner9.setSelection(2);
+                }
+                else if(dis<1000)
+                {
+                    spinner9.setSelection(3);
+                }
+                else if(dis<2000)
+                {
+                    spinner9.setSelection(4);
+                }
+                else if(dis>2000)
+                {
+                    spinner9.setSelection(5);
+                }
+                break;
+            case "hospital":
+                Log.d("data", "hospital distance ->" +distance);
+                spinner6.setSelection(1);
+                if(dis<100)
+                {
+                    spinner7.setSelection(1);
+                }
+                else if(dis<300)
+                {
+                    spinner7.setSelection(2);
+                }
+                else if(dis<1000)
+                {
+                    spinner7.setSelection(3);
+                }
+                else if(dis<2000)
+                {
+                    spinner7.setSelection(4);
+                }
+                else if(dis>2000)
+                {
+                    spinner7.setSelection(5);
+                }
+                break;
+
+
+
+
+        }
     }
     // add items into spinner dynamically
     public void addItemsOnSpinner2() {
@@ -142,7 +369,8 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner5.setAdapter(dataAdapter);
     }
-    public void addItemsOnSpinner6() {
+    public void addItemsOnSpinner6()
+    {
 
         spinner6 = (Spinner) findViewById(R.id.spinner6);
         List<String> list = new ArrayList<String>();
@@ -154,7 +382,9 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner6.setAdapter(dataAdapter);
     }
-    public void addItemsOnSpinner7() {
+    public void addItemsOnSpinner7()
+    {
+
 
         spinner7 = (Spinner) findViewById(R.id.spinner7);
         List<String> list = new ArrayList<String>();
@@ -183,7 +413,8 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner8.setAdapter(dataAdapter);
     }
-    public void addItemsOnSpinner9() {
+    public void addItemsOnSpinner9()
+    {
 
         spinner9 = (Spinner) findViewById(R.id.spinner9);
         List<String> list = new ArrayList<String>();

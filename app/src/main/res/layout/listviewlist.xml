@@ -49,7 +49,7 @@
         android:clickable="false"
         android:focusable="false"
         android:layout_height="wrap_content"
-        android:text="View more data"
+        android:text="Select"
         android:layout_below="@+id/textView12"
         android:layout_centerHorizontal="true" />
 

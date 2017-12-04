@@ -6,10 +6,21 @@
     android:layout_height="match_parent"
     tools:context="inc.appscode0.landvaluationapplication.LocationActivity">
 
+
+    <Button
+        android:layout_width="match_parent"
+        android:id="@+id/button"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="#ffff"
+        android:layout_alignParentTop="true"
+        android:text="Select places"
+        android:layout_height="wrap_content" />
+
     <ListView
+        android:id="@+id/list_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/list_item"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button" />
 </RelativeLayout>
